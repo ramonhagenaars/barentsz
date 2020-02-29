@@ -138,7 +138,8 @@ def discover_attributes(
         include_privates: bool = False,
         in_private_modules: bool = False,
         raise_on_fail: bool = False) -> Iterable[Attribute]:
-    modules = _get_modules_from_source(source, in_private_modules, raise_on_fail)
+    modules = _get_modules_from_source(source, in_private_modules,
+                                       raise_on_fail)
     attributes = []
     for module in modules:
         with open(module.__file__) as module_file:
@@ -159,7 +160,8 @@ def _discover_elements(
         include_privates: bool = False,
         in_private_modules: bool = False,
         raise_on_fail: bool = False) -> List[Any]:
-    modules = _get_modules_from_source(source, in_private_modules, raise_on_fail)
+    modules = _get_modules_from_source(source, in_private_modules,
+                                       raise_on_fail)
     elements = [elem for module in modules
                 for _, elem in inspect.getmembers(module, filter_)
                 if (in_private_modules or not module.__name__.startswith('_'))
@@ -263,15 +265,15 @@ def _match_attribute(line: str) -> Optional[Tuple[str, str, str, str]]:
 
     """
     attr_pattern = re.compile(
-        '^'
-        '\s*'
-        '([a-zA-Z_]+[a-zA-Z_0-9]*)'  # 1: Name.
-        '(\s*:\s*(\w+)\s*)?'  # 3: Type hint.
-        '\s*=\s*'
-        '(.+?)'  # 4: Value.
-        '\s*'
-        '(#\s*(.*?)\s*)?'  # 6: Inline comment.
-        '$'
+        r'^'
+        r'\s*'
+        r'([a-zA-Z_]+[a-zA-Z_0-9]*)'  # 1: Name.
+        r'(\s*:\s*(\w+)\s*)?'  # 3: Type hint.
+        r'\s*=\s*'
+        r'(.+?)'  # 4: Value.
+        r'\s*'
+        r'(#\s*(.*?)\s*)?'  # 6: Inline comment.
+        r'$'
     )
     match = attr_pattern.match(line)
     if match:

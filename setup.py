@@ -26,6 +26,9 @@ setup(
     install_requires=[
         'typish>=1.3.2',
     ],
+    tests_require=[
+        'pycodestyle',
+    ],
     python_requires='>=3.6',
     test_suite='tests',
     zip_safe=False,
