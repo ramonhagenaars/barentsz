@@ -143,7 +143,7 @@ def discover_attributes(
     attributes = []
     for module in modules:
         with open(module.__file__) as module_file:
-            lines = [line for line in module_file]
+            lines = list(module_file)
         for index, line in enumerate(lines):
             match = _match_attribute(line)
             if match:

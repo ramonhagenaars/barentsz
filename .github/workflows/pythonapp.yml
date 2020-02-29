@@ -27,6 +27,9 @@ jobs:
       - name: Pycodestyle
         run: |
             pycodestyle barentsz -v
+      - name: Pylint
+        run: |
+            pylint --rcfile=setup.cfg barentsz
       - name: Mypy
         run: |
             mypy barentsz --disallow-untyped-defs
