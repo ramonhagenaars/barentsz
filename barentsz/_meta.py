@@ -1,0 +1,7 @@
+__title__ = 'barentsz'
+__version__ = '1.0.0'
+__author__ = 'Ramon Hagenaars'
+__author_email__ = 'ramon.hagenaars@gmail.com'
+__description__ = 'For discovering modules, classes, functions and attributes.'
+__url__ = 'https://github.com/ramonhagenaars/barentsz'
+__license__ = 'MIT'
