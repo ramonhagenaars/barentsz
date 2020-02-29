@@ -20,7 +20,7 @@ test_requirements = [
 ]
 
 extras = {
-    'test': requirements,
+    'test': test_requirements,
 }
 
 setup(
