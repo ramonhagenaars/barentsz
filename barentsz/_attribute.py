@@ -11,7 +11,7 @@ class Attribute:
             value: Any,
             doc: Optional[str],
             comment: Optional[str],
-            hint: str,
+            hint: Optional[str],
             module: Module,
             assigned_value: str,
             line: str,
@@ -39,7 +39,7 @@ class Attribute:
     def is_constant(self) -> bool:
         return self.name.isupper()
 
-    def __eq__(self, other: 'Attribute') -> bool:
+    def __eq__(self, other: object) -> bool:
         return (isinstance(other, Attribute)
                 and other.name == self.name
                 and other.value == self.value

@@ -18,6 +18,7 @@ requirements = [
 
 test_requirements = [
     'pycodestyle',
+    'mypy',
 ]
 
 extras = {

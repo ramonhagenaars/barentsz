@@ -56,7 +56,7 @@ def discover_packages(directory: Union[Path, str]) -> List[str]:
 
 def discover_module_names(
         directory: Union[Path, str],
-        include_privates=False) -> List[str]:
+        include_privates: bool = False) -> List[str]:
     """
     Return a list of module names within the given directory. The directory
     must be a package and only names are returned of modules that are in
@@ -110,7 +110,7 @@ def discover_modules(
 
 def discover_classes(
         source: Union[Path, str, Module, Iterable[Module]],
-        signature: type = Any,
+        signature: type = Any,  # type: ignore
         include_privates: bool = False,
         in_private_modules: bool = False,
         raise_on_fail: bool = False) -> List[type]:
@@ -122,7 +122,7 @@ def discover_classes(
 
 def discover_functions(
         source: Union[Path, str, Module, Iterable[Module]],
-        signature: Type[Callable] = Callable,
+        signature: Type[Callable] = Callable,  # type: ignore
         include_privates: bool = False,
         in_private_modules: bool = False,
         raise_on_fail: bool = False) -> List[type]:
@@ -134,7 +134,7 @@ def discover_functions(
 
 def discover_attributes(
         source: Union[Path, str, Module, Iterable[Module]],
-        signature: type = Any,
+        signature: type = Any,  # type: ignore
         include_privates: bool = False,
         in_private_modules: bool = False,
         raise_on_fail: bool = False) -> Iterable[Attribute]:
@@ -245,7 +245,7 @@ def _get_modules_from_source(
     elif isinstance(source, Module):
         modules = [source]
     elif instance_of(source, Iterable[Module]):
-        modules = source
+        modules = source  # type: ignore
     else:
         raise ValueError('The given source must be a Path, string or module. '
                          'Given: {}'.format(source))
@@ -276,12 +276,14 @@ def _match_attribute(line: str) -> Optional[Tuple[str, str, str, str]]:
         r'$'
     )
     match = attr_pattern.match(line)
+    result = None
     if match:
         attr_name = match.group(1)
         hint = match.group(3)
         attr_value = match.group(4)
         inline_comments = match.group(6)
-        return attr_name, hint, attr_value, inline_comments
+        result = attr_name, hint, attr_value, inline_comments
+    return result
 
 
 def _create_attribute(
@@ -328,7 +330,7 @@ def _is_package(directory: Path) -> bool:
 
 
 def _to_package_name(directory: Path) -> str:
-    parts = []
+    parts: List[str] = []
     current_dir = directory
     while _is_package(current_dir):
         # See how far up the tree we can go while still in a package.
