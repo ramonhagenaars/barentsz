@@ -23,5 +23,7 @@ jobs:
           python setup.py test
       - run: |
           pip install .[test]
+      - run: |
           pycodestyle barentsz -v
+      - run: |
           mypy barentsz --disallow-untyped-defs
