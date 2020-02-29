@@ -22,4 +22,5 @@ jobs:
           pip install .
           python setup.py test
       - run: |
+          pip install .[test]
           pycodestyle barentsz

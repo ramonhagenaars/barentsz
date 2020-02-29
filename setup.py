@@ -11,6 +11,17 @@ with open(os.path.join(here, 'barentsz', '_meta.py'), 'r') as f:
 with open('README.md', 'r') as f:
     long_description = f.read()
 
+requirements = [
+    'typish>=1.3.2',
+],
+
+test_requirements = [
+    'pycodestyle',
+]
+
+extras = {
+    'test': requirements,
+}
 
 setup(
     name=meta_info['__title__'],
@@ -23,12 +34,9 @@ setup(
     long_description_content_type='text/markdown',
     license=meta_info['__license__'],
     packages=find_packages(exclude=('tests', 'test_resources')),
-    install_requires=[
-        'typish>=1.3.2',
-    ],
-    tests_require=[
-        'pycodestyle',
-    ],
+    install_requires=requirements,
+    tests_require=test_requirements,
+    extras_require=extras,
     python_requires='>=3.6',
     test_suite='tests',
     zip_safe=False,
