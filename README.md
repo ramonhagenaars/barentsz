@@ -1,3 +1,6 @@
+[![Python versions](https://img.shields.io/pypi/pyversions/barentsz.svg)](https://img.shields.io/pypi/pyversions/barentsz.svg)
+[![PyPI version](https://badge.fury.io/py/barentsz.svg)](https://badge.fury.io/py/barentsz)
+
 # Barentsz
 
 ⛵ Explore and discover modules, classes, functions, attributes.
