@@ -5,10 +5,11 @@ from setuptools import find_packages, setup
 
 here = os.path.abspath(os.path.dirname(__file__))
 meta_info = {}
-with open(os.path.join(here, 'barentsz', '_meta.py'), 'r') as f:
+with open(os.path.join(here, 'barentsz', '_meta.py'),
+          mode='r', encoding='utf-8') as f:
     exec(f.read(), meta_info)
 
-with open('README.md', 'r') as f:
+with open('README.md', mode='r', encoding='utf-8') as f:
     long_description = f.read()
 
 requirements = [
