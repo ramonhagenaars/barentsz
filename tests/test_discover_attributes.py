@@ -14,7 +14,7 @@ class TestDiscoverClasses(TestCase):
         match3 = _match_attribute(
             '  some_attr  :  int  =   2  #   bla bla bla!   ')
 
-        # EXECUTE
+        # VERIFY
         self.assertTupleEqual(('some_attr', None, '2', None), match1)
         self.assertTupleEqual(('some_attr', 'int', '2', None), match2)
         self.assertTupleEqual(('some_attr', 'int', '2', 'bla bla bla!'), match3)
