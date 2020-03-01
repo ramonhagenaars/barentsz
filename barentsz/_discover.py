@@ -114,6 +114,21 @@ def discover_classes(
         include_privates: bool = False,
         in_private_modules: bool = False,
         raise_on_fail: bool = False) -> List[type]:
+    """
+    Discover any classes within the given source and according to the given
+    constraints.
+
+    Args:
+        source: the source in which is searched for any classes.
+        signature: only classes that inherit from signature are returned.
+        include_privates: if True, private classes are included as well.
+        in_private_modules: if True, private modules are explored as well.
+        raise_on_fail: if True, raises an ImportError upon the first import
+        failure.
+
+    Returns: a list of all discovered classes (types).
+
+    """
     elements = _discover_elements(source, inspect.isclass, include_privates,
                                   in_private_modules, raise_on_fail)
     return [cls for cls in elements
@@ -126,6 +141,22 @@ def discover_functions(
         include_privates: bool = False,
         in_private_modules: bool = False,
         raise_on_fail: bool = False) -> List[type]:
+    """
+    Discover any functions within the given source and according to the given
+    constraints.
+
+    Args:
+        source: the source in which is searched for any functions.
+        signature: only functions that have this signature (parameters and
+        return type) are included.
+        include_privates: if True, private functions are included as well.
+        in_private_modules: if True, private modules are explored as well.
+        raise_on_fail: if True, raises an ImportError upon the first import
+        failure.
+
+    Returns: a list of all discovered functions.
+
+    """
     elements = _discover_elements(source, inspect.isfunction, include_privates,
                                   in_private_modules, raise_on_fail)
     return [cls for cls in elements
@@ -137,7 +168,23 @@ def discover_attributes(
         signature: type = Any,  # type: ignore
         include_privates: bool = False,
         in_private_modules: bool = False,
-        raise_on_fail: bool = False) -> Iterable[Attribute]:
+        raise_on_fail: bool = False) -> List[Attribute]:
+    """
+    Discover any attributes within the given source and according to the given
+    constraints.
+
+    Args:
+        source: the source in which is searched for any attributes.
+        signature: only attributes that are subtypes of this signature are
+        included.
+        include_privates: if True, private attributes are included as well.
+        in_private_modules: if True, private modules are explored as well.
+        raise_on_fail: if True, raises an ImportError upon the first import
+        failure.
+
+    Returns: a list of all discovered attributes.
+
+    """
     modules = _get_modules_from_source(source, in_private_modules,
                                        raise_on_fail)
     attributes = []
@@ -230,7 +277,7 @@ def _get_modules_from_source(
     Get an iterable of Modules from the given source.
     Args:
         source: anything that can be turned into an iterable of Modules.
-        in_private_modules: if True, private modules are returned as well.
+        in_private_modules: if True, private modules are explored as well.
         raise_on_fail: if True, raises an ImportError upon the first import
         failure.
 
@@ -325,11 +372,28 @@ def _create_attribute(
 
 
 def _is_package(directory: Path) -> bool:
+    """
+    Return True if the given directory is a package and False otherwise.
+    Args:
+        directory: the directory to check.
+
+    Returns: True if directory is a package.
+
+    """
     paths = discover_paths(directory, '__init__.py')
     return len(paths) > 0
 
 
 def _to_package_name(directory: Path) -> str:
+    """
+    Translate the given directory to a package (str). Check every parent
+    directory in the tree to find the complete fully qualified package name.
+    Args:
+        directory: the directory that is to become a package name.
+
+    Returns: a package name as string.
+
+    """
     parts: List[str] = []
     current_dir = directory
     while _is_package(current_dir):
