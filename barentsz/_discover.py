@@ -187,17 +187,45 @@ def discover_attributes(
     """
     modules = _get_modules_from_source(source, in_private_modules,
                                        raise_on_fail)
-    attributes = []
+    attributes: List[Attribute] = []
     for module in modules:
         with open(module.__file__) as module_file:
             lines = list(module_file)
-        for index, line in enumerate(lines):
-            match = _match_attribute(line)
-            if match:
-                attribute = _create_attribute(*match, module, line, index + 1)
-                if (instance_of(attribute.value, signature)
-                        and (attribute.is_public or include_privates)):
-                    attributes.append(attribute)
+        attributes += _discover_attributes_in_lines(
+            lines, module, signature, include_privates)
+    return attributes
+
+
+def _discover_attributes_in_lines(
+        lines: List[str],
+        module: Module,
+        signature: type,
+        include_privates: bool) -> List[Attribute]:
+    """
+    Discover any attributes within the lines of codee and according to the
+    given constraints.
+
+    Args:
+        lines: the lines of code in which is searched for any attributes.
+        module: the module from which these lines originate.
+        signature: only attributes that are subtypes of this signature are
+        included.
+        include_privates: if True, private attributes are included as well.
+
+    Returns: a list of all discovered attributes.
+
+    """
+    attributes = []
+    for index, line in enumerate(lines):
+        match = _match_attribute(line)
+        if match:
+            name, hint, value, comment = match
+            docstring = _find_attribute_docstring(lines[0:index])
+            attribute = _create_attribute(name, hint, value, docstring,
+                                          comment, module, line, index + 1)
+            if (instance_of(attribute.value, signature)
+                    and (attribute.is_public or include_privates)):
+                attributes.append(attribute)
     return attributes
 
 
@@ -207,6 +235,19 @@ def _discover_elements(
         include_privates: bool = False,
         in_private_modules: bool = False,
         raise_on_fail: bool = False) -> List[Any]:
+    """
+    Discover elements (such as attributes or functions) in the given source.
+    Args:
+        source: the source that is explored.
+        filter_: the filter that determines the type of element.
+        include_privates: if True, private elements are returned as well.
+        in_private_modules: if True, private modules are examined as well.
+        raise_on_fail: if True, an ImportError will be raised upon import
+        failure.
+
+    Returns: a list of elements.
+
+    """
     modules = _get_modules_from_source(source, in_private_modules,
                                        raise_on_fail)
     elements = [elem for module in modules
@@ -337,6 +378,7 @@ def _create_attribute(
         name: str,
         hint: Optional[str],
         assigned_value: str,
+        docstring: Optional[str],
         comment: Optional[str],
         module: Module,
         line: str,
@@ -347,6 +389,7 @@ def _create_attribute(
         name: the name of the attribute.
         hint: the type hint of the attribute (if any).
         assigned_value: the string that was literally assigned.
+        docstring: the docstring above this attribute.
         comment: an inline comment (if any).
         module: the module that contains the attribute.
         line: the line that defines the attribute.
@@ -361,7 +404,7 @@ def _create_attribute(
         name=name,
         type_=type_,
         value=value,
-        doc=None,
+        doc=docstring,
         comment=comment,
         hint=hint,
         module=module,
@@ -401,3 +444,26 @@ def _to_package_name(directory: Path) -> str:
         parts.insert(0, current_dir.stem)
         current_dir = current_dir.parent
     return '.'.join(parts)
+
+
+def _find_attribute_docstring(lines: List[str]) -> Optional[str]:
+    """
+    Find any docstring that is right above an attribute.
+    Args:
+        lines: the lines of code that may contain a docstring.
+
+    Returns: a docstring (str) or None.
+
+    """
+    result = None
+    if lines:
+        joined_lines = ''.join(lines).strip()
+        docstring_pattern = re.compile(
+            r'("{3}\s*([\s\S]+)\s*"{3}|'  # 2: docstring content.
+            r'\'{3}\s*([\s\S]+)\s*\'{3})'  # 3: docstring content.
+            r'$'
+        )
+        match = docstring_pattern.match(joined_lines)
+        if match:
+            result = (match.group(2) or match.group(3)).strip()
+    return result

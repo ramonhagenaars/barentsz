@@ -1,7 +1,11 @@
 
 
 """
-Lets put some comments for ATTR1 here...
+
+Lets put some
+comments for ATTR1 here
+
+with multiple lines...
 """
 ATTR1   : int   = 42    #   And some more comments here...
 _PRIVATE_ATTR = 42

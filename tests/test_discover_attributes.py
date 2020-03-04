@@ -1,7 +1,11 @@
 from pathlib import Path
 from unittest import TestCase
 
-from barentsz._discover import discover_attributes, _match_attribute
+from barentsz._discover import (
+    discover_attributes,
+    _match_attribute,
+    _find_attribute_docstring,
+)
 from test_resources import module1
 
 
@@ -42,6 +46,8 @@ class TestDiscoverClasses(TestCase):
         self.assertEqual('ATTR1', attributes[0].name)
         self.assertEqual(int, attributes[0].type_)
         self.assertEqual(42, attributes[0].value)
+        self.assertEqual('Lets put some\ncomments for ATTR1 here\n\nwith '
+                         'multiple lines...', attributes[0].doc)
         self.assertEqual('And some more comments here...', attributes[0].comment)
 
     def test_discover_attributes_in_private_modules(self):
@@ -84,3 +90,50 @@ class TestDiscoverClasses(TestCase):
         # EXECUTE & VALIDATE
         with self.assertRaises(ValueError):
             discover_attributes(123)
+
+    def test_find_docstring(self):
+        # SETUP
+        expected1 = 'Some\ndocstring...'
+        lines1 = [
+            '    """   \n',
+            '\n',
+            'Some\n'
+            'docstring...\n',
+            '   """     \n',
+        ]
+        expected2 = 'Another\ndocstring...'
+        lines2 = [
+            "    '''   Another\n",
+            'docstring...\n',
+            "   '''     \n",
+        ]
+        expected3 = 'A\ndocstring, that\nhovers a bit'
+        lines3 = [
+            '"""A\n',
+            'docstring, that\n',
+            'hovers a bit"""\n',
+            ' \n',
+            ' \n',
+        ]
+        expected4 = None
+        lines4 = [
+            '""Almost a docstring"""'
+        ]
+        expected5 = None
+        lines5 = [
+            '"""Also almost..."""\n# Nope'
+        ]
+
+        # EXECUTE
+        docstring1 = _find_attribute_docstring(lines1)
+        docstring2 = _find_attribute_docstring(lines2)
+        docstring3 = _find_attribute_docstring(lines3)
+        docstring4 = _find_attribute_docstring(lines4)
+        docstring5 = _find_attribute_docstring(lines5)
+
+        # VERIFY
+        self.assertEqual(expected1, docstring1)
+        self.assertEqual(expected2, docstring2)
+        self.assertEqual(expected3, docstring3)
+        self.assertEqual(expected4, docstring4)
+        self.assertEqual(expected5, docstring5)
