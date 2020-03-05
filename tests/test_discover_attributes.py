@@ -17,13 +17,20 @@ class TestDiscoverClasses(TestCase):
         match2 = _match_attribute('  some_attr  :  int  =   2  ')
         match3 = _match_attribute(
             '  some_attr  :  int  =   2  #   bla bla bla!   ')
+        match4 = _match_attribute(
+            '  some_attr    int  =   2  #   bla bla bla!   ')
+        match5 = _match_attribute(
+            '  some attr     =   2  #   bla bla bla!   ')
+        match6 = _match_attribute(
+            'some attr == 2')
 
         # VERIFY
         self.assertTupleEqual(('some_attr', None, '2', None), match1)
         self.assertTupleEqual(('some_attr', 'int', '2', None), match2)
         self.assertTupleEqual(('some_attr', 'int', '2', 'bla bla bla!'), match3)
-
-        # TODO add non-matches
+        self.assertEqual(None, match4)
+        self.assertEqual(None, match5)
+        self.assertEqual(None, match6)
 
     def test_discover_attributes_in_path(self):
         # SETUP
