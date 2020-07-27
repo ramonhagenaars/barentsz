@@ -29,7 +29,6 @@ jobs:
 
       - name: Doctest
         run: |
-            pytest --doctest-modules --ignore=test_resources --ignore=tests
             python -m doctest README.md
 
       - name: Pycodestyle

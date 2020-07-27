@@ -20,7 +20,6 @@ test_requirements = [
     'pycodestyle',
     'pylint',
     'mypy',
-    'pytest',
 ]
 
 extras = {
