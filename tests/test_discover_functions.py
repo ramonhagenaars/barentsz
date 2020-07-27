@@ -3,20 +3,25 @@ from typing import Callable
 from unittest import TestCase
 
 from barentsz._discover import discover_functions
-from test_resources._private_module import (
+
+import sys
+
+sys.path.append(str(Path(__file__).parent.parent / 'test_resources'))
+from examples_for_tests._private_module import (
     _private_function as private_module_private_function,
-    public_function
+    public_function,
 )
-from test_resources.level2 import module1 as module1_level2
-from test_resources.level2.module1 import function1 as function1_level2
-from test_resources.module1 import function1, _private_function
+from examples_for_tests.level2 import module1 as module1_level2
+from examples_for_tests.level2.module1 import function1 as function1_level2
+from examples_for_tests.module1 import function1, _private_function
 
 
 class TestDiscoverFunctions(TestCase):
 
     def test_discover_functions_in_path(self):
         # SETUP
-        path_to_resources = Path(__file__).parent.parent.joinpath('test_resources')
+        path_to_resources = (Path(__file__).parent.parent / 'test_resources'
+                             / 'examples_for_tests')
 
         # EXECUTE
         functions = discover_functions(path_to_resources)
@@ -34,9 +39,37 @@ class TestDiscoverFunctions(TestCase):
         self.assertEqual(1, len(functions))
         self.assertIn(function1_level2, functions)
 
+    def test_discover_functions_in_class(self):
+        # SETUP
+        class C:
+            def f1(self):
+                ...
+
+            def _f2(self):
+                ...
+
+            @staticmethod
+            def f3():
+                ...
+
+            @classmethod
+            def f4(cls):
+                ...
+
+        # EXECUTE
+        functions = discover_functions(C, include_privates=True)
+
+        # VERIFY
+        self.assertEqual(4, len(functions))
+        self.assertIn(C.f1, functions)
+        self.assertIn(C._f2, functions)
+        self.assertIn(C.f3, functions)
+        self.assertIn(C.f4, functions)
+
     def test_discover_functions_in_private_modules(self):
         # SETUP
-        path_to_resources = Path(__file__).parent.parent.joinpath('test_resources')
+        path_to_resources = (Path(__file__).parent.parent / 'test_resources'
+                             / 'examples_for_tests')
 
         # EXECUTE
         functions = discover_functions(path_to_resources, in_private_modules=True)
@@ -49,7 +82,8 @@ class TestDiscoverFunctions(TestCase):
 
     def test_discover_private_functions(self):
         # SETUP
-        path_to_resources = Path(__file__).parent.parent.joinpath('test_resources')
+        path_to_resources = (Path(__file__).parent.parent / 'test_resources'
+                             / 'examples_for_tests')
 
         # EXECUTE
         functions = discover_functions(path_to_resources, include_privates=True)
@@ -62,7 +96,8 @@ class TestDiscoverFunctions(TestCase):
 
     def test_discover_functions_with_signature(self):
         # SETUP
-        path_to_resources = Path(__file__).parent.parent.joinpath('test_resources')
+        path_to_resources = (Path(__file__).parent.parent / 'test_resources'
+                             / 'examples_for_tests')
 
         # EXECUTE
         functions = discover_functions(path_to_resources,

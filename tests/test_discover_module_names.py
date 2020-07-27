@@ -8,10 +8,12 @@ class TestDiscoverModuleNames(TestCase):
 
     def test_discover_module_names(self):
         # SETUP
-        path_to_resources = Path(__file__).parent.parent.joinpath('test_resources')
-        expected_module0 = 'test_resources.module1'
-        expected_module1 = 'test_resources.level2.module1'
-        expected_module2 = 'test_resources.level2.module2'
+        path_to_resources = (Path(__file__).parent.parent / 'test_resources'
+                             / 'examples_for_tests')
+
+        expected_module0 = 'examples_for_tests.module1'
+        expected_module1 = 'examples_for_tests.level2.module1'
+        expected_module2 = 'examples_for_tests.level2.module2'
 
         # EXECUTE
         modules = discover_module_names(path_to_resources)

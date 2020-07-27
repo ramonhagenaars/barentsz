@@ -8,16 +8,17 @@ class TestDiscoverPaths(TestCase):
 
     def test_discover_paths(self):
         # SETUP
-        path_to_resources = Path(__file__).parent.parent.joinpath('test_resources')
-        expected0 = path_to_resources.joinpath('module1.py')
-        expected1 = path_to_resources.joinpath('__init__.py')
-        expected2 = path_to_resources.joinpath('_private_module.py')
-        expected3 = path_to_resources.joinpath('level2/module1.py')
-        expected4 = path_to_resources.joinpath('level2/module2.py')
-        expected5 = path_to_resources.joinpath('level2/__init__.py')
-        expected6 = path_to_resources.joinpath('not_a_package/module3.py')
-        expected7 = path_to_resources.joinpath('not_a_package/is_a_package/module5.py')
-        expected8 = path_to_resources.joinpath('not_a_package/is_a_package/__init__.py')
+        path_to_resources = (Path(__file__).parent.parent / 'test_resources'
+                             / 'examples_for_tests')
+        expected0 = path_to_resources / 'module1.py'
+        expected1 = path_to_resources / '__init__.py'
+        expected2 = path_to_resources / '_private_module.py'
+        expected3 = path_to_resources / 'level2/module1.py'
+        expected4 = path_to_resources / 'level2/module2.py'
+        expected5 = path_to_resources / 'level2/__init__.py'
+        expected6 = path_to_resources / 'not_a_package/module3.py'
+        expected7 = path_to_resources / 'not_a_package/is_a_package/module5.py'
+        expected8 = path_to_resources / 'not_a_package/is_a_package/__init__.py'
 
         # EXECUTE
         paths = discover_paths(path_to_resources, '**/*.py')
@@ -36,16 +37,17 @@ class TestDiscoverPaths(TestCase):
 
     def test_discover_paths_with_a_string(self):
         # SETUP
-        path_to_resources = Path(__file__).parent.parent.joinpath('test_resources')
-        expected0 = path_to_resources.joinpath('module1.py')
-        expected1 = path_to_resources.joinpath('__init__.py')
-        expected2 = path_to_resources.joinpath('_private_module.py')
-        expected3 = path_to_resources.joinpath('level2/module1.py')
-        expected4 = path_to_resources.joinpath('level2/module2.py')
-        expected5 = path_to_resources.joinpath('level2/__init__.py')
-        expected6 = path_to_resources.joinpath('not_a_package/module3.py')
-        expected7 = path_to_resources.joinpath('not_a_package/is_a_package/module5.py')
-        expected8 = path_to_resources.joinpath('not_a_package/is_a_package/__init__.py')
+        path_to_resources = (Path(__file__).parent.parent / 'test_resources'
+                             / 'examples_for_tests')
+        expected0 = path_to_resources / 'module1.py'
+        expected1 = path_to_resources / '__init__.py'
+        expected2 = path_to_resources / '_private_module.py'
+        expected3 = path_to_resources / 'level2/module1.py'
+        expected4 = path_to_resources / 'level2/module2.py'
+        expected5 = path_to_resources / 'level2/__init__.py'
+        expected6 = path_to_resources / 'not_a_package/module3.py'
+        expected7 = path_to_resources / 'not_a_package/is_a_package/module5.py'
+        expected8 = path_to_resources / 'not_a_package/is_a_package/__init__.py'
 
         # EXECUTE
         paths = discover_paths(str(path_to_resources), '**/*.py')

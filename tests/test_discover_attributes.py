@@ -6,7 +6,7 @@ from barentsz._discover import (
     _match_attribute,
     _find_attribute_docstring,
 )
-from test_resources import module1
+from test_resources.examples_for_tests import module1
 
 
 class TestDiscoverClasses(TestCase):
@@ -34,7 +34,8 @@ class TestDiscoverClasses(TestCase):
 
     def test_discover_attributes_in_path(self):
         # SETUP
-        path_to_resources = Path(__file__).parent.parent.joinpath('test_resources')
+        path_to_resources = (Path(__file__).parent.parent / 'test_resources'
+                             / 'examples_for_tests')
 
         # EXECUTE
         attributes = discover_attributes(path_to_resources)
@@ -59,7 +60,8 @@ class TestDiscoverClasses(TestCase):
 
     def test_discover_attributes_in_private_modules(self):
         # SETUP
-        path_to_resources = Path(__file__).parent.parent.joinpath('test_resources')
+        path_to_resources = (Path(__file__).parent.parent / 'test_resources'
+                             / 'examples_for_tests')
 
         # EXECUTE
         attributes = discover_attributes(path_to_resources, in_private_modules=True)
@@ -70,7 +72,8 @@ class TestDiscoverClasses(TestCase):
 
     def test_discover_private_attributes(self):
         # SETUP
-        path_to_resources = Path(__file__).parent.parent.joinpath('test_resources')
+        path_to_resources = (Path(__file__).parent.parent / 'test_resources'
+                             / 'examples_for_tests')
 
         # EXECUTE
         attributes = discover_attributes(path_to_resources, include_privates=True)
@@ -81,7 +84,8 @@ class TestDiscoverClasses(TestCase):
 
     def test_discover_attributes_with_signature(self):
         # SETUP
-        path_to_resources = Path(__file__).parent.parent.joinpath('test_resources')
+        path_to_resources = (Path(__file__).parent.parent / 'test_resources'
+                             / 'examples_for_tests')
 
         # EXECUTE
         attributes_str = discover_attributes(path_to_resources, signature=str)

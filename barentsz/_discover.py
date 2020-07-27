@@ -136,7 +136,7 @@ def discover_classes(
 
 
 def discover_functions(
-        source: Union[Path, str, Module, Iterable[Module]],
+        source: Union[Path, str, Module, Iterable[Module], type],
         signature: Type[Callable] = Callable,  # type: ignore
         include_privates: bool = False,
         in_private_modules: bool = False,
@@ -157,10 +157,17 @@ def discover_functions(
     Returns: a list of all discovered functions.
 
     """
-    elements = _discover_elements(source, inspect.isfunction, include_privates,
+    def filter_(*args_: Iterable[Any]) -> bool:
+        return (inspect.isfunction(*args_)
+                or inspect.ismethod(*args_))
+
+    if not isinstance(source, type):
+        filter_ = inspect.isfunction  # type: ignore
+
+    elements = _discover_elements(source, filter_, include_privates,
                                   in_private_modules, raise_on_fail)
-    return [cls for cls in elements
-            if (signature is Callable or instance_of(cls, signature))]
+    return [elem for elem in elements
+            if (signature is Callable or instance_of(elem, signature))]
 
 
 def discover_attributes(
@@ -230,7 +237,7 @@ def _discover_attributes_in_lines(
 
 
 def _discover_elements(
-        source: Union[Path, str, Module, Iterable[Module]],
+        source: Union[Path, str, Module, Iterable[Module], type],
         filter_: Callable[[Any], bool],
         include_privates: bool = False,
         in_private_modules: bool = False,
@@ -248,11 +255,15 @@ def _discover_elements(
     Returns: a list of elements.
 
     """
-    modules = _get_modules_from_source(source, in_private_modules,
-                                       raise_on_fail)
-    elements = [elem for module in modules
-                for _, elem in inspect.getmembers(module, filter_)
-                if (in_private_modules or not module.__name__.startswith('_'))
+    if isinstance(source, type):
+        sources = [source]  # type: Iterable
+    else:
+        sources = _get_modules_from_source(source, in_private_modules,
+                                           raise_on_fail)
+
+    elements = [elem for src in sources
+                for _, elem in inspect.getmembers(src, filter_)
+                if (in_private_modules or not src.__name__.startswith('_'))
                 and (include_privates or not elem.__name__.startswith('_'))]
     return elements
 
