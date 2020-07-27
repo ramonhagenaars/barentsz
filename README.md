@@ -148,8 +148,9 @@ discover_attributes(source: Union[pathlib.Path, str, module, Iterable[module]], 
 
 ##### Usage Example
 ```python
->>> discover_modules('./test_resources/examples_for_readme')
-[<module 'examples_for_readme.module_a' from 'C:\\projects\\personal\\barentsz\\test_resources\\examples_for_readme\\module_a.py'>, <module 'examples_for_readme.module_b' from 'C:\\projects\\personal\\barentsz\\test_resources\\examples_for_readme\\module_b.py'>]
+>>> modules = discover_modules('./test_resources/examples_for_readme')
+>>> [m.__name__ for m in modules]
+['examples_for_readme.module_a', 'examples_for_readme.module_b']
 
 ```
 
@@ -216,8 +217,8 @@ discover_packages(directory: Union[pathlib.Path, str]) -> List[str]
 ##### Usage Example
 ```python
 >>> paths = discover_paths('./test_resources/examples_for_readme', '**/*.py')
->>> [str(p) for p in paths]
-['test_resources\\examples_for_readme\\module_a.py', 'test_resources\\examples_for_readme\\module_b.py', 'test_resources\\examples_for_readme\\__init__.py']
+>>> [str(p.as_posix()) for p in paths]
+['test_resources/examples_for_readme/module_a.py', 'test_resources/examples_for_readme/module_b.py', 'test_resources/examples_for_readme/__init__.py']
 
 ```
 
