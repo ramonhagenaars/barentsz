@@ -29,7 +29,11 @@ jobs:
 
       - name: Doctest
         run: |
+          if [[ matrix.python-version -eq '3.6' ]]; then
+            echo "Skipping doctests on 3.6"
+          else
             python -m doctest README.md
+          fi
 
       - name: Pycodestyle
         run: |
