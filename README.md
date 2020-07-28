@@ -270,5 +270,5 @@ discover_paths(directory: Union[pathlib.Path, str], pattern: str) -> List[pathli
 
 ## ❄ Changelist
 
-### 1.0.0 [2020-02-27]
-* First release.
+### 1.0.0 [2020-07-28]
+* First release. 🎉
