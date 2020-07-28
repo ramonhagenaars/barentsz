@@ -1,6 +1,8 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/barentsz.svg)](https://img.shields.io/pypi/pyversions/barentsz.svg)
 [![PyPI version](https://badge.fury.io/py/barentsz.svg)](https://badge.fury.io/py/barentsz)
 ![barentsz](https://github.com/ramonhagenaars/barentsz/workflows/barentsz/badge.svg)
+[![codecov](https://codecov.io/gh/ramonhagenaars/barentsz/branch/master/graph/badge.svg)](https://codecov.io/gh/ramonhagenaars/barentsz)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ramonhagenaars/barentsz/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ramonhagenaars/barentsz/?branch=master)
 
 # Barentsz
 
