@@ -1,5 +1,6 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/barentsz.svg)](https://img.shields.io/pypi/pyversions/barentsz.svg)
 [![PyPI version](https://badge.fury.io/py/barentsz.svg)](https://badge.fury.io/py/barentsz)
+![barentsz](https://github.com/ramonhagenaars/barentsz/workflows/barentsz/badge.svg)
 
 # Barentsz
 
@@ -240,8 +241,6 @@ discover_paths(directory: Union[pathlib.Path, str], pattern: str) -> List[pathli
 
 
 ```
-
-
 
 ## ❄ (Not So) Frequently Asked Questions
 1) > When is Barentsz particularly useful?
