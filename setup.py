@@ -20,6 +20,8 @@ test_requirements = [
     'pycodestyle',
     'pylint',
     'mypy',
+    'pytest',
+    'pytest-cov',
 ]
 
 extras = {
