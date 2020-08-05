@@ -367,7 +367,7 @@ discover_paths(directory: Union[pathlib.Path, str], pattern: str) -> List[pathli
 ## ❄ Changelist
 
 ### 1.1.0 [2020-08-05]
-* Added the `here` function that return the directory of the caller of that function. 
+* Added the `here` function that returns the directory of the caller of that function. 
 * Added the `discovery` function that can conveniently find types using the current dir and a given class.
 * Added `exclude` to `discover_classes` to allow for excluding one or more types from discovery.
 * Fix for double discovered classes.
