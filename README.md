@@ -67,7 +67,7 @@ please see the **Help documentation** subsections.
 >>> help(discover)
 Help on function discover in module barentsz._discover:
 <BLANKLINE>
-discover(source: Any = None, *, what: Any = typing.List[type], **kwargs) -> list
+discover(source: Any = None, *, what: Any = typing.List[type], **kwargs: dict) -> list
     Convenience function for discovering types in some source. If not source
     is given, the directory is used in which the calling module is located.
 <BLANKLINE>
