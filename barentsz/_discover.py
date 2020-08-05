@@ -53,8 +53,8 @@ def discover(source: Any = None, *, what: Any = List[type], **kwargs) -> list:
     else:
         accepted_types = ', '.join(['`{}`'.format(delegate)
                                     for delegate, _ in delegates])
-        raise ValueError('Type `{}` is not supported. This function accepts: {}'
-                         .format(what, accepted_types))
+        raise ValueError('Type `{}` is not supported. This function accepts: '
+                         '{}'.format(what, accepted_types))
 
 
 def discover_paths(directory: Union[Path, str], pattern: str) -> List[Path]:
