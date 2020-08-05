@@ -539,7 +539,8 @@ def _discover_list(
         what_: List[type],
         source: Union[Path, str, Module, Iterable[Module]],
         **kwargs) -> List[type]:
-    signature = getattr(what_, '__args__', [Any])[0]
+    args = getattr(what_, '__args__', None) or [Any]
+    signature = args[0]
     if signature in (type, Type) or isinstance(signature, TypeVar):
         signature = Any
     kwargs['signature'] = signature
