@@ -24,7 +24,12 @@ from barentsz._here import here
 from barentsz._attribute import Attribute
 
 
-def discover(source: Any = None, *, what: Any = List[type], **kwargs) -> list:
+def discover(
+        source: Any = None,
+        *,
+        what: Any = List[type],
+        **kwargs: dict,
+) -> list:
     """
     Convenience function for discovering types in some source. If not source
     is given, the directory is used in which the calling module is located.
@@ -169,12 +174,12 @@ def discover_classes(
     Returns: a list of all discovered classes (types).
 
     """
-    exclude = _ensure_set(exclude)
+    exclude_ = _ensure_set(exclude)
     elements = _discover_elements(source, inspect.isclass, include_privates,
                                   in_private_modules, raise_on_fail)
     result = list({cls for cls in elements
                    if (signature is Any or subclass_of(cls, signature))
-                   and cls not in exclude})
+                   and cls not in exclude_})
     result.sort(key=lambda cls: cls.__name__)
     return result
 
@@ -541,7 +546,7 @@ def _discover_list(
         **kwargs) -> List[type]:
     args = getattr(what_, '__args__', None) or [Any]
     signature = args[0]
-    if signature in (type, Type) or isinstance(signature, TypeVar):
+    if signature in (type, Type) or isinstance(signature, TypeVar):  # type: ignore[arg-type] # noqa
         signature = Any
     kwargs['signature'] = signature
     return discover_classes(source, **kwargs)
