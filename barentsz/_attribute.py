@@ -7,6 +7,7 @@ class Attribute:
     """
     Represents an attribute of a module.
     """
+
     def __init__(
             self,
             name: str,

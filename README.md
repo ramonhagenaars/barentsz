@@ -24,7 +24,63 @@ pip install barentsz
 * Discover all/some functions in a path, module or class;
 * Discover all/some attributes in a path or module.
 
+##### List of all features
+
+```python
+>>> import barentsz
+>>> for feature in (f for f in dir(barentsz) if not f.startswith('_')):
+...     print(feature)
+discover
+discover_attributes
+discover_classes
+discover_functions
+discover_module_names
+discover_modules
+discover_packages
+discover_paths
+here
+
+```
+
 ## ❄ Features in detail
+
+The sections below contain all features that are offered by this lib. For the API details,
+please see the **Help documentation** subsections.
+
+### Discover
+
+##### Import
+```python
+>>> from barentsz import discover
+
+```
+
+##### Usage Example
+```python
+>>> discover('./test_resources/examples_for_readme')
+[<class 'examples_for_readme.module_a.ClassA'>, <class 'examples_for_readme.module_b.ClassB'>]
+
+```
+
+##### Help documentation
+```python
+>>> help(discover)
+Help on function discover in module barentsz._discover:
+<BLANKLINE>
+discover(source: Any = None, *, what: Any = typing.List[type], **kwargs: dict) -> list
+    Convenience function for discovering types in some source. If not source
+    is given, the directory is used in which the calling module is located.
+<BLANKLINE>
+    Args:
+        source: the source in which is searched or the directory of the
+        caller if None.
+        what: the type that is to be discovered.
+        **kwargs: any keyword argument that is passed on.
+<BLANKLINE>
+    Returns: a list of discoveries.
+<BLANKLINE>
+
+```
 
 ### Discover Classes
 
@@ -46,7 +102,7 @@ pip install barentsz
 >>> help(discover_classes)
 Help on function discover_classes in module barentsz._discover:
 <BLANKLINE>
-discover_classes(source: Union[pathlib.Path, str, module, Iterable[module]], signature: type = typing.Any, include_privates: bool = False, in_private_modules: bool = False, raise_on_fail: bool = False) -> List[type]
+discover_classes(source: Union[pathlib.Path, str, module, Iterable[module]], signature: type = typing.Any, include_privates: bool = False, in_private_modules: bool = False, raise_on_fail: bool = False, exclude: Union[Iterable[type], type] = None) -> List[type]
     Discover any classes within the given source and according to the given
     constraints.
 <BLANKLINE>
@@ -57,9 +113,12 @@ discover_classes(source: Union[pathlib.Path, str, module, Iterable[module]], sig
         in_private_modules: if True, private modules are explored as well.
         raise_on_fail: if True, raises an ImportError upon the first import
         failure.
+        exclude: a type or multiple types that are to be excluded from the
+        result.
 <BLANKLINE>
     Returns: a list of all discovered classes (types).
 <BLANKLINE>
+
 
 ```
 
@@ -209,6 +268,36 @@ discover_packages(directory: Union[pathlib.Path, str]) -> List[str]
 
 ```
 
+### Current Directory (here)
+
+##### Import
+```python
+>>> from barentsz import here
+
+```
+
+##### Usage Example
+```python
+>>> str(here())
+'.'
+
+```
+
+##### Help documentation
+```python
+>>> help(here)
+Help on function here in module barentsz._here:
+<BLANKLINE>
+here(frames_back: int = 0) -> pathlib.Path
+    Get the current directory from which this function is called.
+    Args:
+        frames_back: the number of extra frames to look back.
+<BLANKLINE>
+    Returns: the directory as a Path instance.
+<BLANKLINE>
+
+```
+
 ### Discover Paths
 
 ##### Import
@@ -221,7 +310,8 @@ discover_packages(directory: Union[pathlib.Path, str]) -> List[str]
 ```python
 >>> paths = discover_paths('./test_resources/examples_for_readme', '**/*.py')
 >>> [str(p.as_posix()) for p in paths]
-['test_resources/examples_for_readme/module_a.py', 'test_resources/examples_for_readme/module_b.py', 'test_resources/examples_for_readme/__init__.py']
+['test_resources/examples_for_readme/__init__.py', 'test_resources/examples_for_readme/module_a.py', 'test_resources/examples_for_readme/module_b.py']
+
 
 ```
 
@@ -269,7 +359,18 @@ discover_paths(directory: Union[pathlib.Path, str], pattern: str) -> List[pathli
     _Well... since this library is all about exploring and discovering and because
     I really enjoyed the cold north, I thought it to be a fitting name._
 
+6) > What is the answer to the Ultimate Question of Life, the Universe, and Everything?
+
+    _Haven't got a clue, what are you asking me for anyway? I suggest you build an AI 
+    to deduce the answer (using barentsz of course)._
+
 ## ❄ Changelist
+
+### 1.1.0
+* Added the `here` function that return the directory of the caller of that function. 
+* Added the `discovery` function that can conveniently find types using the current dir and a given class.
+* Added `exclude` to `discover_classes` to allow for excluding one or more types from discovery.
+* Fix for double discovered classes.
 
 ### 1.0.0 [2020-07-28]
 * First release. 🎉
