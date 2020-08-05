@@ -310,7 +310,8 @@ here(frames_back: int = 0) -> pathlib.Path
 ```python
 >>> paths = discover_paths('./test_resources/examples_for_readme', '**/*.py')
 >>> [str(p.as_posix()) for p in paths]
-['test_resources/examples_for_readme/module_a.py', 'test_resources/examples_for_readme/module_b.py', 'test_resources/examples_for_readme/__init__.py']
+['test_resources/examples_for_readme/__init__.py', 'test_resources/examples_for_readme/module_a.py', 'test_resources/examples_for_readme/module_b.py']
+
 
 ```
 

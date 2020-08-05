@@ -78,8 +78,10 @@ def discover_paths(directory: Union[Path, str], pattern: str) -> List[Path]:
     abspath = str(directory_path.absolute())
     sys.path.insert(0, abspath)
     path_to_discover = directory_path.joinpath(pattern)
-    return [Path(filename) for filename in
-            glob.iglob(str(path_to_discover), recursive=True)]
+    result = [Path(filename) for filename in
+              glob.iglob(str(path_to_discover), recursive=True)]
+    result.sort()
+    return result
 
 
 def discover_packages(directory: Union[Path, str]) -> List[str]:
@@ -92,7 +94,9 @@ def discover_packages(directory: Union[Path, str]) -> List[str]:
     Returns: a list of packages.
 
     """
-    return list(_discover_packages_per_path(directory).values())
+    result = list(_discover_packages_per_path(directory).values())
+    result.sort()
+    return result
 
 
 def discover_module_names(
@@ -117,6 +121,7 @@ def discover_module_names(
                        for p in discover_paths(path, '*.py')
                        if p.stem != '__init__'
                        and (include_privates or not p.stem.startswith('_'))])
+    result.sort()
     return result
 
 
@@ -146,6 +151,7 @@ def discover_modules(
         except Exception as err:
             if raise_on_fail:
                 raise ImportError(err)
+    result.sort(key=lambda module: module.__name__)
     return result
 
 
@@ -216,8 +222,10 @@ def discover_functions(
 
     elements = _discover_elements(source, filter_, include_privates,
                                   in_private_modules, raise_on_fail)
-    return [elem for elem in elements
-            if (signature is Callable or instance_of(elem, signature))]
+    result = [elem for elem in elements
+              if (signature is Callable or instance_of(elem, signature))]
+    result.sort(key=lambda func: func.__name__)
+    return result
 
 
 def discover_attributes(
@@ -250,6 +258,7 @@ def discover_attributes(
             lines = list(module_file)
         attributes += _discover_attributes_in_lines(
             lines, module, signature, include_privates)
+    attributes.sort(key=lambda attr: attr.name)
     return attributes
 
 
