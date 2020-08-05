@@ -20,7 +20,7 @@ from typing import (
 
 from typish import Module, subclass_of, instance_of
 
-from barentsz import here
+from barentsz._here import here
 from barentsz._attribute import Attribute
 
 
