@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 from unittest import TestCase
 
-from barentsz._discover import discover_classes
+from barentsz import discover_classes
 
 sys.path.append(str(Path(__file__).parent.parent / 'test_resources'))
 
@@ -79,3 +79,18 @@ class TestDiscoverClasses(TestCase):
         # EXECUTE & VALIDATE
         with self.assertRaises(ValueError):
             discover_classes(123)
+
+    def test_discover_classes_with_exclusions(self):
+        # SETUP
+        path_to_resources = (Path(__file__).parent.parent / 'test_resources'
+                             / 'examples_for_tests')
+
+        # EXECUTE
+        classes1 = discover_classes(path_to_resources, exclude=Class1)
+        classes2 = discover_classes(path_to_resources, exclude=[Class1])
+
+        # VERIFY
+        self.assertEqual(1, len(classes1))
+        self.assertIn(Class1_level2, classes1)
+        self.assertEqual(1, len(classes2))
+        self.assertIn(Class1_level2, classes2)

@@ -14,11 +14,47 @@ from typing import (
     Iterable,
     Optional,
     Tuple,
+    Set,
+    TypeVar,
 )
 
 from typish import Module, subclass_of, instance_of
 
+from barentsz import here
 from barentsz._attribute import Attribute
+
+
+def discover(source: Any = None, *, what: Any = List[type], **kwargs) -> list:
+    """
+    Convenience function for discovering types in some source. If not source
+    is given, the directory is used in which the calling module is located.
+
+    Args:
+        source: the source in which is searched or the directory of the
+        caller if None.
+        what: the type that is to be discovered.
+        **kwargs: any keyword argument that is passed on.
+
+    Returns: a list of discoveries.
+
+    """
+    source = source or here(1)
+
+    delegates = [
+        (List[type], _discover_list),
+        (list, _discover_list),
+        (List, _discover_list),
+    ]
+
+    for tuple_ in delegates:
+        type_, delegate = tuple_
+        if subclass_of(what, type_):
+            return delegate(what, source, **kwargs)
+    else:
+        accepted_types = ', '.join(['`{}`'.format(delegate)
+                                    for delegate, _ in delegates])
+        raise ValueError('Type `{}` is not supported. This function accepts: {}'
+                         .format(what, accepted_types))
 
 
 def discover_paths(directory: Union[Path, str], pattern: str) -> List[Path]:
@@ -113,7 +149,9 @@ def discover_classes(
         signature: type = Any,  # type: ignore
         include_privates: bool = False,
         in_private_modules: bool = False,
-        raise_on_fail: bool = False) -> List[type]:
+        raise_on_fail: bool = False,
+        exclude: Union[Iterable[type], type] = None
+) -> List[type]:
     """
     Discover any classes within the given source and according to the given
     constraints.
@@ -125,14 +163,20 @@ def discover_classes(
         in_private_modules: if True, private modules are explored as well.
         raise_on_fail: if True, raises an ImportError upon the first import
         failure.
+        exclude: a type or multiple types that are to be excluded from the
+        result.
 
     Returns: a list of all discovered classes (types).
 
     """
+    exclude = _ensure_set(exclude)
     elements = _discover_elements(source, inspect.isclass, include_privates,
                                   in_private_modules, raise_on_fail)
-    return [cls for cls in elements
-            if (signature is Any or subclass_of(cls, signature))]
+    result = list({cls for cls in elements
+                   if (signature is Any or subclass_of(cls, signature))
+                   and cls not in exclude})
+    result.sort(key=lambda cls: cls.__name__)
+    return result
 
 
 def discover_functions(
@@ -157,6 +201,7 @@ def discover_functions(
     Returns: a list of all discovered functions.
 
     """
+
     def filter_(*args_: Iterable[Any]) -> bool:
         return (inspect.isfunction(*args_)
                 or inspect.ismethod(*args_))
@@ -478,3 +523,24 @@ def _find_attribute_docstring(lines: List[str]) -> Optional[str]:
         if match:
             result = (match.group(2) or match.group(3)).strip()
     return result
+
+
+def _ensure_set(arg: Union[object, Iterable[object]]) -> Set[object]:
+    # Make sure that arg is a set.
+    result = arg or set()
+    if not isinstance(result, Iterable):
+        result = {result}
+    else:
+        result = set(result)
+    return result
+
+
+def _discover_list(
+        what_: List[type],
+        source: Union[Path, str, Module, Iterable[Module]],
+        **kwargs) -> List[type]:
+    signature = getattr(what_, '__args__', [Any])[0]
+    if signature in (type, Type) or isinstance(signature, TypeVar):
+        signature = Any
+    kwargs['signature'] = signature
+    return discover_classes(source, **kwargs)

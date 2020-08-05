@@ -13,7 +13,7 @@ with open('README.md', mode='r', encoding='utf-8') as f:
     long_description = f.read()
 
 requirements = [
-    'typish>=1.3.2',
+    'typish>=1.7.0',
 ],
 
 test_requirements = [
