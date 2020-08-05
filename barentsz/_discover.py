@@ -50,11 +50,11 @@ def discover(source: Any = None, *, what: Any = List[type], **kwargs) -> list:
         type_, delegate = tuple_
         if subclass_of(what, type_):
             return delegate(what, source, **kwargs)
-    else:
-        accepted_types = ', '.join(['`{}`'.format(delegate)
-                                    for delegate, _ in delegates])
-        raise ValueError('Type `{}` is not supported. This function accepts: '
-                         '{}'.format(what, accepted_types))
+
+    accepted_types = ', '.join(['`{}`'.format(delegate)
+                                for delegate, _ in delegates])
+    raise ValueError('Type `{}` is not supported. This function accepts: '
+                     '{}'.format(what, accepted_types))
 
 
 def discover_paths(directory: Union[Path, str], pattern: str) -> List[Path]:
