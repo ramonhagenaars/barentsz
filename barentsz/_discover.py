@@ -549,4 +549,4 @@ def _discover_list(
     if signature in (type, Type) or isinstance(signature, TypeVar):  # type: ignore[arg-type] # noqa
         signature = Any
     kwargs['signature'] = signature
-    return discover_classes(source, **kwargs)
+    return discover_classes(source, **kwargs)  # type: ignore[arg-type]
