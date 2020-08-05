@@ -543,7 +543,7 @@ def _ensure_set(arg: Union[object, Iterable[object]]) -> Set[object]:
 def _discover_list(
         what_: List[type],
         source: Union[Path, str, Module, Iterable[Module]],
-        **kwargs) -> List[type]:
+        **kwargs: dict) -> List[type]:
     args = getattr(what_, '__args__', None) or [Any]
     signature = args[0]
     if signature in (type, Type) or isinstance(signature, TypeVar):  # type: ignore[arg-type] # noqa
