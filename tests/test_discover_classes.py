@@ -1,6 +1,8 @@
 import sys
+from abc import ABC
 from pathlib import Path
 from unittest import TestCase
+from unittest.mock import patch, MagicMock
 
 from barentsz import discover_classes
 
@@ -94,3 +96,20 @@ class TestDiscoverClasses(TestCase):
         self.assertIn(Class1_level2, classes1)
         self.assertEqual(1, len(classes2))
         self.assertIn(Class1_level2, classes2)
+
+    @patch('barentsz._discover._discover_elements')
+    def test_discover_classes_exclude_abstract(self, mock_discover_elements: MagicMock):
+        # SETUP
+        class MyClass:
+            ...
+
+        class MyAbstractClass(ABC):
+            ...
+
+        mock_discover_elements.return_value = [MyClass, MyAbstractClass]
+
+        # EXECUTE
+        classes = discover_classes(None, exclude_abstract=True)
+
+        # VERIFY
+        self.assertEqual([MyClass], classes)

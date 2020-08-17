@@ -2,6 +2,7 @@ import glob
 import inspect
 import re
 import sys
+from abc import ABC
 from importlib import import_module
 from pathlib import Path
 from typing import (
@@ -161,7 +162,8 @@ def discover_classes(
         include_privates: bool = False,
         in_private_modules: bool = False,
         raise_on_fail: bool = False,
-        exclude: Union[Iterable[type], type] = None
+        exclude: Union[Iterable[type], type] = None,
+        exclude_abstract: bool = False
 ) -> List[type]:
     """
     Discover any classes within the given source and according to the given
@@ -176,6 +178,7 @@ def discover_classes(
         failure.
         exclude: a type or multiple types that are to be excluded from the
         result.
+        exclude_abstract: if True, abstract classes are filtered out.
 
     Returns: a list of all discovered classes (types).
 
@@ -185,7 +188,8 @@ def discover_classes(
                                   in_private_modules, raise_on_fail)
     result = list({cls for cls in elements
                    if (signature is Any or subclass_of(cls, signature))
-                   and cls not in exclude_})
+                   and cls not in exclude_
+                   and not (exclude_abstract and _is_abstract(cls))})
     result.sort(key=lambda cls: cls.__name__)
     return result
 
@@ -559,3 +563,7 @@ def _discover_list(
         signature = Any
     kwargs['signature'] = signature
     return discover_classes(source, **kwargs)  # type: ignore[arg-type]
+
+
+def _is_abstract(cls: type) -> bool:
+    return ABC in cls.mro() and hasattr(cls, '__abstractmethods__')
