@@ -80,7 +80,7 @@ class TestDiscoverClasses(TestCase):
         with self.assertRaises(ValueError):
             discover_classes(123)
 
-    def test_discover_classes_with_exclusions(self):
+    def test_discover_classes_with_type_exclusions(self):
         # SETUP
         path_to_resources = (Path(__file__).parent.parent / 'test_resources'
                              / 'examples_for_tests')
@@ -94,3 +94,19 @@ class TestDiscoverClasses(TestCase):
         self.assertIn(Class1_level2, classes1)
         self.assertEqual(1, len(classes2))
         self.assertIn(Class1_level2, classes2)
+
+    def test_discover_classes_with_predicate_exclusions(self):
+        # SETUP
+        path_to_resources = (Path(__file__).parent.parent / 'test_resources'
+                             / 'examples_for_tests')
+
+        def _name_is_class1(cls: type) -> bool:
+            return cls.__name__.lower() == 'class1'
+
+        # EXECUTE
+        classes1 = discover_classes(path_to_resources, exclude=_name_is_class1)
+        classes2 = discover_classes(path_to_resources, exclude=[_name_is_class1])
+
+        # VERIFY
+        self.assertEqual(0, len(classes1))
+        self.assertEqual(0, len(classes2))
