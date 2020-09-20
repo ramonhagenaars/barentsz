@@ -5,23 +5,27 @@ import sys
 from importlib import import_module
 from pathlib import Path
 from typing import (
-    Union,
-    Dict,
-    List,
     Any,
     Callable,
-    Type,
+    Dict,
     Iterable,
+    List,
     Optional,
-    Tuple,
     Set,
+    Tuple,
+    Type,
     TypeVar,
+    Union,
 )
 
-from typish import Module, subclass_of, instance_of
+from typish import (
+    Module,
+    instance_of,
+    subclass_of,
+)
 
-from barentsz._here import here
 from barentsz._attribute import Attribute
+from barentsz._here import here
 
 
 def discover(

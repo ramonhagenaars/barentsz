@@ -24,17 +24,32 @@ jobs:
             pip install .[test]
 
       - name: Test
-        run: |
-            python setup.py test
+        run: scons test
 
       - name: Doctest
         if: ${{ matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest' }}
-        run: |
-            python -m doctest README.md
-      
+        run: scons doctest
+
+      - name: Pycodestyle
+        run: scons pycodestyle
+
+      - name: Pylint
+        run: scons pylint
+
+      - name: Imports
+        run: scons check format
+
+      - name: Mypy
+        run: scons mypy
+
+      - name: Code Complexity
+        run: scons complexity
+
+      - name: Coverage
+        run: scons coverage
+
       - name: Generate coverage report
-        run: |
-          pytest --cov=./ --cov-report=xml
+        run: pytest --cov=./ --cov-report=xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
@@ -46,15 +61,3 @@ jobs:
           env_vars: OS,PYTHON
           name: codecov-umbrella
           fail_ci_if_error: true
-
-      - name: Pycodestyle
-        run: |
-            pycodestyle barentsz -v
-
-      - name: Pylint
-        run: |
-            pylint --rcfile=setup.cfg barentsz
-
-      - name: Mypy
-        run: |
-            mypy barentsz --disallow-untyped-defs
