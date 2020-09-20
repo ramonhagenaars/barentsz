@@ -5,24 +5,28 @@ import sys
 from importlib import import_module
 from pathlib import Path
 from typing import (
-    Union,
-    Dict,
-    List,
     Any,
     Callable,
-    Type,
+    Dict,
     Iterable,
+    List,
     Optional,
-    Tuple,
     Set,
+    Tuple,
+    Type,
     TypeVar,
+    Union,
 )
 
-from typish import Module, subclass_of, instance_of
+from typish import (
+    Module,
+    instance_of,
+    subclass_of,
+)
 
-from barentsz._here import here
 from barentsz._attribute import Attribute
 from barentsz._typings import exclude_pred
+from barentsz._here import here
 
 
 def discover(
@@ -151,7 +155,7 @@ def discover_modules(
             result.append(imported_module)
         except Exception as err:
             if raise_on_fail:
-                raise ImportError(err)
+                raise ImportError(err) from err
     result.sort(key=lambda module: module.__name__)
     return result
 

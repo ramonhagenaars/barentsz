@@ -14,14 +14,21 @@ with open('README.md', mode='r', encoding='utf-8') as f:
 
 requirements = [
     'typish>=1.7.0',
-],
+]
 
 test_requirements = [
+    'scons',
     'pycodestyle',
     'pylint',
     'mypy',
     'pytest',
     'pytest-cov',
+    'coverage',
+    'radon',
+    'xenon',
+    'autoflake',
+    'isort',
+
 ]
 
 extras = {
