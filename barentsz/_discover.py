@@ -1,8 +1,8 @@
 import glob
-import inspect
 import re
 import sys
 from importlib import import_module
+from inspect import getmembers, isfunction, ismethod, isclass
 from pathlib import Path
 from typing import (
     Any,
@@ -25,8 +25,8 @@ from typish import (
 )
 
 from barentsz._attribute import Attribute
-from barentsz._typings import exclude_pred
 from barentsz._here import here
+from barentsz._typings import ClsPredicate
 
 
 def discover(
@@ -166,7 +166,8 @@ def discover_classes(
         include_privates: bool = False,
         in_private_modules: bool = False,
         raise_on_fail: bool = False,
-        exclude: Union[type, exclude_pred, Iterable[Union[type, exclude_pred]]] = None
+        exclude: Union[type, ClsPredicate,
+                       Iterable[Union[type, ClsPredicate]]] = None
 ) -> List[type]:
     """
     Discover any classes within the given source and according to the given
@@ -186,14 +187,15 @@ def discover_classes(
 
     """
     exclude_ = _ensure_set(exclude)
-    elements = _discover_elements(source, inspect.isclass, include_privates,
+    elements = _discover_elements(source, isclass, include_privates,
                                   in_private_modules, raise_on_fail)
     result = list({cls for cls in elements
                    if (signature is Any or subclass_of(cls, signature))
                    and cls not in exclude_})
-    exclude_predicates = [e for e in exclude_ if inspect.isfunction(e)]
+
+    exclude_predicates = (e for e in exclude_ if isfunction(e))
     for pred in exclude_predicates:
-        result = [cls for cls in result if not pred(cls)]
+        result = [cls for cls in result if not pred(cls)]  # type: ignore[operator] # noqa
     result.sort(key=lambda cls: cls.__name__)
     return result
 
@@ -222,11 +224,11 @@ def discover_functions(
     """
 
     def filter_(*args_: Iterable[Any]) -> bool:
-        return (inspect.isfunction(*args_)
-                or inspect.ismethod(*args_))
+        return (isfunction(*args_)
+                or ismethod(*args_))
 
     if not isinstance(source, type):
-        filter_ = inspect.isfunction  # type: ignore
+        filter_ = isfunction  # type: ignore
 
     elements = _discover_elements(source, filter_, include_privates,
                                   in_private_modules, raise_on_fail)
@@ -329,7 +331,7 @@ def _discover_elements(
                                            raise_on_fail)
 
     elements = [elem for src in sources
-                for _, elem in inspect.getmembers(src, filter_)
+                for _, elem in getmembers(src, filter_)
                 if (in_private_modules or not src.__name__.startswith('_'))
                 and (include_privates or not elem.__name__.startswith('_'))]
     return elements
