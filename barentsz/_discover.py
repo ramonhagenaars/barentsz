@@ -25,6 +25,7 @@ from typish import (
 )
 
 from barentsz._attribute import Attribute
+from barentsz._typings import exclude_pred
 from barentsz._here import here
 
 
@@ -165,7 +166,7 @@ def discover_classes(
         include_privates: bool = False,
         in_private_modules: bool = False,
         raise_on_fail: bool = False,
-        exclude: Union[Iterable[type], type] = None
+        exclude: Union[type, exclude_pred, Iterable[Union[type, exclude_pred]]] = None
 ) -> List[type]:
     """
     Discover any classes within the given source and according to the given
@@ -178,8 +179,8 @@ def discover_classes(
         in_private_modules: if True, private modules are explored as well.
         raise_on_fail: if True, raises an ImportError upon the first import
         failure.
-        exclude: a type or multiple types that are to be excluded from the
-        result.
+        exclude: one or more types or predicates that are to be excluded
+        from the result.
 
     Returns: a list of all discovered classes (types).
 
@@ -190,6 +191,9 @@ def discover_classes(
     result = list({cls for cls in elements
                    if (signature is Any or subclass_of(cls, signature))
                    and cls not in exclude_})
+    exclude_predicates = [e for e in exclude_ if inspect.isfunction(e)]
+    for pred in exclude_predicates:
+        result = [cls for cls in result if not pred(cls)]
     result.sort(key=lambda cls: cls.__name__)
     return result
 
