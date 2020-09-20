@@ -47,6 +47,7 @@ if 'mypy' in COMMAND_LINE_TARGETS:
     _exec(f'mypy {_SUBJECT} --show-error-codes --disallow-untyped-defs')
 
 if 'complexity' in COMMAND_LINE_TARGETS:
+    _exec(f'radon cc {_SUBJECT}')
     _exec(f'radon cc {_SUBJECT} -nc --total-average')
     _exec(f'xenon {_SUBJECT} --max-absolute B --max-modules A --max-average A')
 
