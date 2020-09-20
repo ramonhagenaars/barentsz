@@ -1,27 +1,37 @@
 import glob
-import inspect
 import re
 import sys
 from importlib import import_module
+from inspect import (
+    getmembers,
+    isclass,
+    isfunction,
+    ismethod,
+)
 from pathlib import Path
 from typing import (
-    Union,
-    Dict,
-    List,
     Any,
     Callable,
-    Type,
+    Dict,
     Iterable,
+    List,
     Optional,
-    Tuple,
     Set,
+    Tuple,
+    Type,
     TypeVar,
+    Union,
 )
 
-from typish import Module, subclass_of, instance_of
+from typish import (
+    Module,
+    instance_of,
+    subclass_of,
+)
 
-from barentsz._here import here
 from barentsz._attribute import Attribute
+from barentsz._here import here
+from barentsz._typings import ClsPredicate
 
 
 def discover(
@@ -150,7 +160,7 @@ def discover_modules(
             result.append(imported_module)
         except Exception as err:
             if raise_on_fail:
-                raise ImportError(err)
+                raise ImportError(err) from err
     result.sort(key=lambda module: module.__name__)
     return result
 
@@ -161,7 +171,8 @@ def discover_classes(
         include_privates: bool = False,
         in_private_modules: bool = False,
         raise_on_fail: bool = False,
-        exclude: Union[Iterable[type], type] = None
+        exclude: Union[type, ClsPredicate,
+                       Iterable[Union[type, ClsPredicate]]] = None
 ) -> List[type]:
     """
     Discover any classes within the given source and according to the given
@@ -174,18 +185,22 @@ def discover_classes(
         in_private_modules: if True, private modules are explored as well.
         raise_on_fail: if True, raises an ImportError upon the first import
         failure.
-        exclude: a type or multiple types that are to be excluded from the
-        result.
+        exclude: one or more types or predicates that are to be excluded
+        from the result.
 
     Returns: a list of all discovered classes (types).
 
     """
     exclude_ = _ensure_set(exclude)
-    elements = _discover_elements(source, inspect.isclass, include_privates,
+    elements = _discover_elements(source, isclass, include_privates,
                                   in_private_modules, raise_on_fail)
     result = list({cls for cls in elements
                    if (signature is Any or subclass_of(cls, signature))
                    and cls not in exclude_})
+
+    exclude_predicates = (e for e in exclude_ if isfunction(e))
+    for pred in exclude_predicates:
+        result = [cls for cls in result if not pred(cls)]  # type: ignore[operator] # noqa
     result.sort(key=lambda cls: cls.__name__)
     return result
 
@@ -214,11 +229,11 @@ def discover_functions(
     """
 
     def filter_(*args_: Iterable[Any]) -> bool:
-        return (inspect.isfunction(*args_)
-                or inspect.ismethod(*args_))
+        return (isfunction(*args_)
+                or ismethod(*args_))
 
     if not isinstance(source, type):
-        filter_ = inspect.isfunction  # type: ignore
+        filter_ = isfunction  # type: ignore
 
     elements = _discover_elements(source, filter_, include_privates,
                                   in_private_modules, raise_on_fail)
@@ -321,7 +336,7 @@ def _discover_elements(
                                            raise_on_fail)
 
     elements = [elem for src in sources
-                for _, elem in inspect.getmembers(src, filter_)
+                for _, elem in getmembers(src, filter_)
                 if (in_private_modules or not src.__name__.startswith('_'))
                 and (include_privates or not elem.__name__.startswith('_'))]
     return elements

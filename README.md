@@ -1,6 +1,5 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/barentsz.svg)](https://img.shields.io/pypi/pyversions/barentsz.svg)
 [![PyPI version](https://badge.fury.io/py/barentsz.svg)](https://badge.fury.io/py/barentsz)
-![barentsz](https://github.com/ramonhagenaars/barentsz/workflows/barentsz/badge.svg)
 [![codecov](https://codecov.io/gh/ramonhagenaars/barentsz/branch/master/graph/badge.svg)](https://codecov.io/gh/ramonhagenaars/barentsz)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ramonhagenaars/barentsz/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ramonhagenaars/barentsz/?branch=master)
 
@@ -102,7 +101,7 @@ discover(source: Any = None, *, what: Any = typing.List[type], **kwargs: dict) -
 >>> help(discover_classes)
 Help on function discover_classes in module barentsz._discover:
 <BLANKLINE>
-discover_classes(source: Union[pathlib.Path, str, module, Iterable[module]], signature: type = typing.Any, include_privates: bool = False, in_private_modules: bool = False, raise_on_fail: bool = False, exclude: Union[Iterable[type], type] = None) -> List[type]
+discover_classes(source: Union[pathlib.Path, str, module, Iterable[module]], signature: type = typing.Any, include_privates: bool = False, in_private_modules: bool = False, raise_on_fail: bool = False, exclude: Union[type, Callable[[type], bool], Iterable[Union[type, Callable[[type], bool]]]] = None) -> List[type]
     Discover any classes within the given source and according to the given
     constraints.
 <BLANKLINE>
@@ -113,12 +112,11 @@ discover_classes(source: Union[pathlib.Path, str, module, Iterable[module]], sig
         in_private_modules: if True, private modules are explored as well.
         raise_on_fail: if True, raises an ImportError upon the first import
         failure.
-        exclude: a type or multiple types that are to be excluded from the
-        result.
+        exclude: one or more types or predicates that are to be excluded
+        from the result.
 <BLANKLINE>
     Returns: a list of all discovered classes (types).
 <BLANKLINE>
-
 
 ```
 
@@ -365,6 +363,9 @@ discover_paths(directory: Union[pathlib.Path, str], pattern: str) -> List[pathli
     to deduce the answer (using barentsz of course)._
 
 ## ❄ Changelist
+
+### 1.2.0 [2020-09-20]
+* Changed `exclude` parameter to also allow predicates.
 
 ### 1.1.0 [2020-08-05]
 * Added the `here` function that returns the directory of the caller of that function. 
