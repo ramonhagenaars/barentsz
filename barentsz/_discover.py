@@ -154,7 +154,7 @@ def discover_modules(
             result.append(imported_module)
         except Exception as err:
             if raise_on_fail:
-                raise ImportError(err)
+                raise ImportError(err) from err
     result.sort(key=lambda module: module.__name__)
     return result
 
