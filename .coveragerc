@@ -2,5 +2,7 @@
 [run]
 omit =
     setup.py
+    SConstruct.py
+    */docs/*
+    */test_resources/*
     tests/*
-    test_resources/*
