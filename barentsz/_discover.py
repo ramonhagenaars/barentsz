@@ -2,7 +2,12 @@ import glob
 import re
 import sys
 from importlib import import_module
-from inspect import getmembers, isfunction, ismethod, isclass
+from inspect import (
+    getmembers,
+    isclass,
+    isfunction,
+    ismethod,
+)
 from pathlib import Path
 from typing import (
     Any,
