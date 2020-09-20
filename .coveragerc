@@ -6,3 +6,5 @@ omit =
     */docs/*
     */test_resources/*
     tests/*
+include =
+    barentsz/*
