@@ -523,7 +523,7 @@ def _to_package_name(directory: Path) -> str:
 
     """
     parts: List[str] = []
-    current_dir = directory
+    current_dir = directory.absolute()
     while _is_package(current_dir):
         # See how far up the tree we can go while still in a package.
         parts.insert(0, current_dir.stem)

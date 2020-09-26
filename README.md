@@ -364,6 +364,9 @@ discover_paths(directory: Union[pathlib.Path, str], pattern: str) -> List[pathli
 
 ## ❄ Changelist
 
+### 1.2.1 [2020-09-26]
+* Fix for a bug when discovering using a relative path.
+
 ### 1.2.0 [2020-09-20]
 * Changed `exclude` parameter to also allow predicates.
 

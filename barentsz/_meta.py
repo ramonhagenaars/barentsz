@@ -1,5 +1,5 @@
 __title__ = 'barentsz'
-__version__ = '1.2.0'
+__version__ = '1.2.1'
 __author__ = 'Ramon Hagenaars'
 __author_email__ = 'ramon.hagenaars@gmail.com'
 __description__ = 'For discovering modules, classes, functions and attributes.'
