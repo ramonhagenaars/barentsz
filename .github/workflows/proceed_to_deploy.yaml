@@ -1,0 +1,22 @@
+name: Proceed
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Create Release PR
+      uses: repo-sync/pull-request@v2
+
+      with:
+        source_branch: "master"
+        destination_branch: "release"
+        pr_title: "DEPLOY RELEASE"
+        pr_body: "[GENERATED]"
+        pr_label: "release"
+        pr_allow_empty: true
+        github_token: ${{ secrets.ADMIN }}
